@@ -1,5 +1,5 @@
 from django.db import models
-
+from account.models import CustomUser as User
 
 
 class SeatStatus(models.TextChoices):
@@ -106,7 +106,7 @@ class Show(models.Model):
         return f"{self.movie_id.title} at {self.showing_datetime.strftime('%Y-%m-%d %H:%M')} in {self.hall_id.name}"
 
 class Order(models.Model):
-    user_id = models.BigIntegerField()
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
     show_id = models.ForeignKey(Show, on_delete=models.CASCADE, related_name='orders')
     seatplace_id = models.ForeignKey(SeatPlace, on_delete=models.CASCADE, related_name='orders')
     payment_status = models.CharField(max_length=10, choices=PaymentStatus.choices, default=PaymentStatus.UNPAID)
