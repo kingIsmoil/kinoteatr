@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Выбор мест</title>
+</head>
+<body>
+    <h1>Сеанс: {{ show.movie_id.title }} ({{ show.showing_datetime|date:"d.m.Y H:i" }})</h1>
+    <h3>Зал: {{ show.hall_id.name }}</h3>
+
+    <table>
+        <tr>
+            <th>Место</th>
+            <th>Статус</th>
+            <th>Цена</th>
+            <th>Действие</th>
+        </tr>
+        {% for seat in seats %}
+            <tr>
+                <td>{{ seat.id }}</td>
+                <td>{{ seat.get_status_display }}</td>
+                <td>{{ seat.price }} сом</td>
+                <td>
+                    {% if seat.status == 'free' %}
+                        <form method="post" action="{% url 'make_order' show.id seat.id %}">
+                            {% csrf_token %}
+                            <button type="submit">Забронировать</button>
+                        </form>
+                    {% else %}
+                        Занято
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <p><a href="{% url 'movie_list' %}">← Назад к списку фильмов</a></p>
+</body>
+</html>

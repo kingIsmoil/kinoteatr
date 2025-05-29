@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Фильмы</title>
+</head>
+<body>
+    <h1>Фильмы и расписание</h1>
+    {% for movie in movies %}
+        <div style="border: 1px solid #ccc; padding: 10px; margin: 10px;">
+            <h2>{{ movie.title }}</h2>
+            <p>{{ movie.description }}</p>
+            <img src="{{ movie.image.url }}" width="200" alt="{{ movie.title }}">
+            <h4>Сеансы:</h4>
+            <ul>
+                {% for show in shows %}
+                    {% if show.movie_id.id == movie.id %}
+                        <li>
+                            <a href="{% url 'show_seats' show.id %}">
+                                {{ show.showing_datetime|date:"d.m.Y H:i" }}
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    {% endfor %}
+</body>
+</html>

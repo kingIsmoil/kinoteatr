@@ -74,7 +74,7 @@ class Trailer(models.Model):
 
 class Review(models.Model):
     movie_id = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='reviews')
-    user_id = models.BigIntegerField()
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews')
     star_number = models.IntegerField()
     description = models.TextField()
     is_active = models.BooleanField(default=True)
