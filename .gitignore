@@ -1,2 +1,4 @@
 .venv
-sqldb
+db.sqlite3
+media
+__pycache__
