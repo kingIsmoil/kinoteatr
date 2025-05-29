@@ -1,0 +1,20 @@
+{% extends 'account/base.html' %}
+
+{% block title %}Мои отзывы{% endblock %}
+
+{% block content %}
+<h2>Мои отзывы</h2>
+{% if reviews %}
+{% for review in reviews %}
+<div class="review" style="border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 4px;">
+    <h3>Фильм ID: {{ review.movie_id }}</h3>
+    <p><strong>Оценка:</strong> {{ review.star_number }} из 5</p>
+    <p><strong>Отзыв:</strong> {{ review.description }}</p>
+    <p><small>Дата: {{ review.created_at }}</small></p>
+</div>
+{% endfor %}
+{% else %}
+<p>У вас пока нет отзывов.</p>
+{% endif %}
+<p><a href="{% url 'create_review' %}" class="btn">Написать новый отзыв</a></p>
+{% endblock %}
