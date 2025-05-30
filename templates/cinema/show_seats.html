@@ -21,10 +21,14 @@
                 <td>{{ seat.price }} сом</td>
                 <td>
                     {% if seat.status == 'free' %}
-                        <form method="post" action="{% url 'make_order' show.id seat.id %}">
-                            {% csrf_token %}
-                            <button type="submit">Забронировать</button>
-                        </form>
+                        {% if user.is_authenticated %}
+                            <form method="post" action="{% url 'make_order' show.id seat.id %}">
+                                {% csrf_token %}
+                                <button type="submit">Забронировать</button>
+                            </form>
+                        {% else %}
+                            <a href="{% url 'login' %}">Войдите</a> чтобы забронировать
+                        {% endif %}
                     {% else %}
                         Занято
                     {% endif %}

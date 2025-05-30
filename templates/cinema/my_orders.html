@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Мои бронирования</title>
+</head>
+<body>
+    <h1>Мои бронирования</h1>
+    <a href="{% url 'movie_list' %}">← На главную</a>
+    
+    {% if orders %}
+        <table border="1">
+            <tr>
+                <th>Фильм</th>
+                <th>Дата сеанса</th>
+                <th>Зал</th>
+                <th>Место</th>
+                <th>Цена</th>
+                <th>Статус оплаты</th>
+                <th>Действия</th>
+            </tr>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.show_id.movie_id.title }}</td>
+                <td>{{ order.show_id.showing_datetime|date:"d.m.Y H:i" }}</td>
+                <td>{{ order.show_id.hall_id.name }}</td>
+                <td>{{ order.seatplace_id.id }}</td>
+                <td>{{ order.seatplace_id.price }} сом</td>
+                <td>{{ order.get_payment_status_display }}</td>
+                <td>
+                    <a href="{% url 'movie_detail' order.show_id.movie_id.id %}">
+                        Оставить отзыв
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>У вас нет активных бронирований</p>
+    {% endif %}
+</body>
+</html>

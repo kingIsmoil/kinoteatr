@@ -42,6 +42,25 @@
     </ul>
 
     <h2>Отзывы</h2>
+    {% if user.is_authenticated %}
+        <div>
+            <h3>Оставить отзыв</h3>
+            <form method="post" action="{% url 'add_review' movie.id %}">
+                {% csrf_token %}
+                <div>
+                    <label>Оценка (1-5):</label>
+                    <input type="number" name="star_number" min="1" max="5" required>
+                </div>
+                <div>
+                    <label>Ваш отзыв:</label>
+                    <textarea name="description" rows="4" required></textarea>
+                </div>
+                <button type="submit">Отправить</button>
+            </form>
+        </div>
+    {% else %}
+        <p><a href="{% url 'login' %}">Войдите</a>, чтобы оставить отзыв</p>
+    {% endif %}
     {% for review in reviews %}
         <div style="border: 1px solid #ccc; padding: 10px; margin: 5px;">
             <p><strong>Оценка:</strong> {{ review.star_number }}⭐</p>
