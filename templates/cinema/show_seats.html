@@ -2,6 +2,8 @@
 <html>
 <head>
     <title>Выбор мест</title>
+    {% load static %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
     <h1>Сеанс: {{ show.movie_id.title }} ({{ show.showing_datetime|date:"d.m.Y H:i" }})</h1>
