@@ -1,5 +1,8 @@
+# views.py
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Movie, Show, SeatPlace, Order
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import UserCreationForm
+from .models import *
 from django.utils.timezone import now
 
 def movie_list(request):
@@ -10,6 +13,23 @@ def movie_list(request):
         'shows': shows,
     }
     return render(request, 'cinema/movie_list.html', context)
+
+def movie_detail(request, movie_id):
+    movie = get_object_or_404(Movie, id=movie_id)
+    trailers = Trailer.objects.filter(movie_id=movie_id, is_active=True)
+    reviews = Review.objects.filter(movie_id=movie_id, is_active=True)
+    shows = Show.objects.filter(movie_id=movie_id, showing_datetime__gte=now()).order_by('showing_datetime')
+    
+    context = {
+        'movie': movie,
+        'trailers': trailers,
+        'reviews': reviews,
+        'shows': shows,
+    }
+    return render(request, 'cinema/movie_detail.html', context)
+
+
+
 
 def show_seats(request, show_id):
     show = get_object_or_404(Show, id=show_id)

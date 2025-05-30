@@ -4,11 +4,20 @@
     <title>Фильмы</title>
 </head>
 <body>
+    <div style="float: right;">
+        {% if user.is_authenticated %}
+            Привет, {{ user.email }}! <a href="{% url 'logout' %}">Выйти</a>
+        {% else %}
+            <a href="{% url 'login' %}">Войти</a> | 
+            <a href="{% url 'register' %}">Регистрация</a>
+        {% endif %}
+    </div>
+
     <h1>Фильмы и расписание</h1>
     {% for movie in movies %}
         <div style="border: 1px solid #ccc; padding: 10px; margin: 10px;">
-            <h2>{{ movie.title }}</h2>
-            <p>{{ movie.description }}</p>
+            <h2><a href="{% url 'movie_detail' movie.id %}">{{ movie.title }}</a></h2>
+            <p>{{ movie.description|truncatewords:30 }}</p>
             <img src="{{ movie.image.url }}" width="200" alt="{{ movie.title }}">
             <h4>Сеансы:</h4>
             <ul>
