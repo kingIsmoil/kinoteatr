@@ -12,12 +12,16 @@ a {
     color: #e50914;
     text-decoration: none;
 }
+
 a:hover {
     text-decoration: underline;
 }
 
 /* Заголовки */
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
     color: #ffffff;
     margin-bottom: 15px;
 }
@@ -29,7 +33,7 @@ form {
     border-radius: 12px;
     max-width: 400px;
     margin: 0 auto 30px auto;
-    box-shadow: 0 0 10px rgba(0,0,0,0.7);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
 }
 
 form label {
@@ -85,11 +89,12 @@ table {
     color: #ddd;
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 0 12px rgba(0,0,0,0.6);
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
     font-size: 14px;
 }
 
-table th, table td {
+table th,
+table td {
     padding: 12px 15px;
     border-bottom: 1px solid #333;
     text-align: center;
@@ -116,7 +121,7 @@ table tr:hover {
     margin: 10px auto;
     max-width: 600px;
     border-radius: 12px;
-    box-shadow: 0 0 8px rgba(0,0,0,0.5);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
 }
 
 .movie-card h2 {
@@ -150,7 +155,8 @@ table tr:hover {
 }
 
 /* Кнопки и ссылки в таблицах и списках */
-button, a.button-link {
+button,
+a.button-link {
     display: inline-block;
     padding: 8px 16px;
     background-color: #e50914;
@@ -162,7 +168,8 @@ button, a.button-link {
     cursor: pointer;
 }
 
-button:hover, a.button-link:hover {
+button:hover,
+a.button-link:hover {
     background-color: #b00610;
 }
 
@@ -202,4 +209,60 @@ video {
     content: "";
     clear: both;
     display: table;
+}
+
+/* Сообщения и уведомления */
+.message {
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    text-align: center;
+    background-color: #2a2a2a;
+    color: #fff;
+    position: relative;
+    transition: opacity 0.3s ease;
+}
+
+.error-message {
+    background-color: rgba(229, 9, 20, 0.2);
+    border: 1px solid #e50914;
+    color: #fff;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    text-align: center;
+    position: relative;
+    transition: opacity 0.3s ease;
+}
+
+.success {
+    background-color: rgba(25, 135, 84, 0.2);
+    border: 1px solid #198754;
+}
+
+.warning {
+    background-color: rgba(255, 193, 7, 0.2);
+    border: 1px solid #ffc107;
+}
+
+.info {
+    background-color: rgba(13, 202, 240, 0.2);
+    border: 1px solid #0dcaf0;
+}
+
+/* Кнопка закрытия */
+.close-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 20px;
+    color: #fff;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.close-btn:hover {
+    opacity: 1;
 }

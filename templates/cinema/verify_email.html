@@ -1,26 +1,54 @@
-{% extends 'cinema/base.html' %}
+<!DOCTYPE html>
+<html>
 
-{% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="text-center">Подтверждение Email</h3>
-                </div>
-                <div class="card-body">
-                    <p class="text-center">Мы отправили код подтверждения на ваш email. Пожалуйста, введите его ниже:
-                    </p>
-                    <form method="post">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary">Подтвердить</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+<head>
+    <title>Подтверждение Email</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+    <h1>Подтверждение Email</h1>
+    <form method="post">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+        <div class="error-message">
+            <span class="close-btn">&times;</span>
+            {% for error in form.non_field_errors %}
+            {{ error }}
+            {% endfor %}
         </div>
-    </div>
-</div>
-{% endblock %}
+        {% endif %}
+        {% if messages %}
+        {% for message in messages %}
+        <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+            <span class="close-btn">&times;</span>
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        <p>Мы отправили код подтверждения на ваш email. Пожалуйста, введите его ниже:</p>
+        {{ form.as_p }}
+        <button type="submit">Подтвердить</button>
+    </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Находим все кнопки закрытия
+            var closeButtons = document.querySelectorAll('.close-btn');
+
+            // Добавляем обработчик для каждой кнопки
+            closeButtons.forEach(function (button) {
+                button.addEventListener('click', function () {
+                    // Находим родительский элемент (сообщение) и удаляем его
+                    this.parentElement.style.opacity = '0';
+                    setTimeout(() => {
+                        this.parentElement.style.display = 'none';
+                    }, 300); // Задержка для анимации
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

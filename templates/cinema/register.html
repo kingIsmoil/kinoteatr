@@ -1,42 +1,20 @@
-{% extends 'cinema/base.html' %}
+<!DOCTYPE html>
+<html>
 
-{% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="text-center">Регистрация</h3>
-                </div>
-                <div class="card-body">
-                    <form method="post" novalidate>
-                        {% csrf_token %}
-                        {% if form.non_field_errors %}
-                        <div class="alert alert-danger">
-                            {% for error in form.non_field_errors %}
-                            {{ error }}
-                            {% endfor %}
-                        </div>
-                        {% endif %}
+<head>
+    <title>Регистрация</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
 
-                        {% for field in form %}
-                        <div class="form-group mb-3">
-                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                            {{ field.errors }}
-                            {{ field }}
-                        </div>
-                        {% endfor %}
+<body>
+    <h1>Регистрация</h1>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Зарегистрироваться</button>
+    </form>
+    <p>Уже есть аккаунт? <a href="{% url 'login' %}">Войти</a></p>
+</body>
 
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
-                        </div>
-                    </form>
-                    <div class="text-center mt-3">
-                        <p>Уже есть аккаунт? <a href="{% url 'login' %}">Войти</a></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-{% endblock %}
+</html>
