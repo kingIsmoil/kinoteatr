@@ -10,6 +10,21 @@ class PaymentStatus(models.TextChoices):
     PAID = 'paid', 'Paid'
     UNPAID = 'unpaid', 'Unpaid'
 
+class PaymentMethod(models.TextChoices):
+    CARD = 'card', 'Карта'
+    CASH = 'cash', 'Наличные'
+    OTHER = 'other', 'Другое'
+
+class UserCard(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cards')
+    card_number = models.CharField(max_length=16)
+    expiry_date = models.CharField(max_length=5)
+    card_holder = models.CharField(max_length=100)
+    is_default = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"**** **** **** {self.card_number[-4:]}"
+
 class Genre(models.Model):
     name = models.CharField(max_length=100)
 
@@ -111,6 +126,9 @@ class Order(models.Model):
     seatplace_id = models.ForeignKey(SeatPlace, on_delete=models.CASCADE, related_name='orders')
     payment_status = models.CharField(max_length=10, choices=PaymentStatus.choices, default=PaymentStatus.UNPAID)
     created_at = models.DateTimeField(auto_now_add=True)
-
+    payment_method = models.CharField(max_length=10, choices=PaymentMethod.choices)
+    payment_card = models.ForeignKey(UserCard, on_delete=models.SET_NULL, null=True, blank=True)
+    
     def __str__(self):
         return f"Order by user {self.user_id} - {self.show_id.movie_id.title}"
+
