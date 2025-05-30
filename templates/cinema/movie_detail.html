@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ movie.title }}</title>
+</head>
+<body>
+    <a href="{% url 'movie_list' %}">← Назад к списку фильмов</a>
+    <h1>{{ movie.title }}</h1>
+    <img src="{{ movie.image.url }}" width="300" alt="{{ movie.title }}">
+    
+    <p><strong>Описание:</strong> {{ movie.description }}</p>
+    <p><strong>Длительность:</strong> {{ movie.duration }} мин.</p>
+    <p><strong>Страна:</strong> {{ movie.country }}</p>
+    <p><strong>Дата выхода:</strong> {{ movie.release_date|date:"d.m.Y" }}</p>
+    <p><strong>Жанры:</strong> 
+        {% for genre in movie.genres.all %}
+            {{ genre.name }}{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+    </p>
+
+    <h2>Трейлеры</h2>
+    {% for trailer in trailers %}
+        <div>
+            <video width="400" controls>
+                <source src="{{ trailer.file.url }}" type="video/mp4">
+                Ваш браузер не поддерживает видео.
+            </video>
+        </div>
+    {% endfor %}
+
+    <h2>Сеансы</h2>
+    <ul>
+        {% for show in shows %}
+            <li>
+                <a href="{% url 'show_seats' show.id %}">
+                    {{ show.showing_datetime|date:"d.m.Y H:i" }} (Зал: {{ show.hall_id.name }})
+                </a>
+            </li>
+        {% empty %}
+            <li>Нет доступных сеансов</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Отзывы</h2>
+    {% if user.is_authenticated %}
+        <div>
+            <h3>Оставить отзыв</h3>
+            <form method="post" action="{% url 'add_review' movie.id %}">
+                {% csrf_token %}
+                <div>
+                    <label>Оценка (1-5):</label>
+                    <input type="number" name="star_number" min="1" max="5" required>
+                </div>
+                <div>
+                    <label>Ваш отзыв:</label>
+                    <textarea name="description" rows="4" required></textarea>
+                </div>
+                <button type="submit">Отправить</button>
+            </form>
+        </div>
+    {% else %}
+        <p><a href="{% url 'login' %}">Войдите</a>, чтобы оставить отзыв</p>
+    {% endif %}
+    {% for review in reviews %}
+        <div style="border: 1px solid #ccc; padding: 10px; margin: 5px;">
+            <p><strong>Оценка:</strong> {{ review.star_number }}⭐</p>
+            <p>{{ review.description }}</p>
+            <small>{{ review.created_at|date:"d.m.Y H:i" }}</small>
+        </div>
+    {% empty %}
+        <p>Пока нет отзывов</p>
+    {% endfor %}
+</body>
+</html>

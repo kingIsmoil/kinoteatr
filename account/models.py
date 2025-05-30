@@ -17,7 +17,7 @@ class CustomUser(AbstractUser):
         ordering = ['-date_joined']
 
 class Review(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='reviews')
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='user_reviews')
     movie_id = models.IntegerField()  
     star_number = models.IntegerField()
     description = models.TextField()
