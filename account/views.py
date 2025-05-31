@@ -7,6 +7,11 @@ from .forms import RegisterForm, VerificationForm
 from .decorators import user_not_authenticated
 from .models import CustomUser
 import logging
+from django.urls import reverse
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes
+from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm
 
 logger = logging.getLogger(__name__)
 
@@ -100,3 +105,52 @@ def logoutview(request):
     logout(request)
     messages.info(request, 'Вы успешно вышли из системы.')
     return redirect('login')
+
+def forgot_password(request):
+    if request.method == 'POST':
+        form = PasswordResetForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            try:
+                user = CustomUser.objects.get(email=email)
+                token = default_token_generator.make_token(user)
+                uid = urlsafe_base64_encode(force_bytes(user.pk))
+                reset_url = request.build_absolute_uri(
+                    reverse('reset_password', kwargs={'uidb64': uid, 'token': token})
+                )
+                
+                send_mail(
+                    'Сброс пароля',
+                    f'Для сброса пароля перейдите по ссылке: {reset_url}',
+                    settings.EMAIL_HOST_USER,
+                    [email],
+                    fail_silently=False,
+                )
+                messages.success(request, 'Инструкции по сбросу пароля отправлены на ваш email')
+                return redirect('login')
+            except CustomUser.DoesNotExist:
+                messages.error(request, 'Пользователь с таким email не найден')
+    else:
+        form = PasswordResetForm()
+    return render(request, 'cinema/forgot_password.html', {'form': form})
+
+def reset_password(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = CustomUser.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
+        user = None
+
+    if user is not None and default_token_generator.check_token(user, token):
+        if request.method == 'POST':
+            form = SetPasswordForm(user, request.POST)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Ваш пароль был успешно изменен')
+                return redirect('login')
+        else:
+            form = SetPasswordForm(user)
+        return render(request, 'cinema/reset_password.html', {'form': form})
+    else:
+        messages.error(request, 'Ссылка для сброса пароля недействительна')
+        return redirect('login')
