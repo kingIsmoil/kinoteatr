@@ -6,7 +6,40 @@ body {
     margin: 0;
     padding: 20px;
 }
+.day-filter {
+    margin: 20px 0;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
 
+.day-filter a {
+    padding: 8px 12px;
+    background: #e9ecef;
+    border-radius: 20px;
+    text-decoration: none;
+    color: #495057;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.day-filter a:hover {
+    background: #dee2e6;
+}
+
+.day-filter a.active {
+    background: #0d6efd;
+    color: white;
+}
+
+.day-filter strong {
+    margin-right: 10px;
+    color: #212529;
+}
 /* Ссылки */
 a {
     color: #e50914;

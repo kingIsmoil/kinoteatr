@@ -1,21 +1,64 @@
-# views.py
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth import login, authenticate
-from django.contrib.auth.forms import UserCreationForm
 from .models import *
 from django.utils.timezone import now
 from django.contrib.auth.decorators import login_required
-from .forms import ReviewForm,PaymentForm
+from .forms import ReviewForm, PaymentForm
 from django.contrib import messages
+from datetime import datetime, timedelta
 
 def movie_list(request):
     movies = Movie.objects.filter(is_active=True)
-    shows = Show.objects.filter(showing_datetime__gte=now()).order_by('showing_datetime')
+    today = now().date()
+    tomorrow = today + timedelta(days=1)
+
+    # Получаем параметр даты из GET-запроса
+    date_filter = request.GET.get('date')
+    selected_date = today  # по умолчанию
+
+    # Получаем все доступные даты с сеансами
+    available_dates = Show.objects.filter(
+        showing_datetime__gte=now(),
+        movie_id__in=movies
+    ).dates('showing_datetime', 'day').distinct()
+
+    shows = Show.objects.filter(
+        showing_datetime__gte=now(),
+        movie_id__in=movies
+    )
+
+    if date_filter:
+        try:
+            selected_date = datetime.strptime(date_filter, '%Y-%m-%d').date()
+            shows = shows.filter(showing_datetime__date=selected_date)
+        except ValueError:
+            # Если неправильная дата, показываем на сегодня
+            selected_date = today
+            shows = shows.filter(showing_datetime__date=today)
+    else:
+        # По умолчанию — сегодня
+        shows = shows.filter(showing_datetime__date=today)
+
+    # Группируем фильмы с их сеансами
+    movies_with_shows = []
+    for movie in movies:
+        movie_shows = shows.filter(movie_id=movie)
+        if movie_shows.exists():
+            movies_with_shows.append({
+                'movie': movie,
+                'shows': movie_shows
+            })
+
     context = {
-        'movies': movies,
-        'shows': shows,
+        'movies_with_shows': movies_with_shows,
+        'available_dates': available_dates,
+        'selected_date': selected_date.strftime('%Y-%m-%d'),
+        'today': today.strftime('%Y-%m-%d'),
+        'tomorrow': tomorrow.strftime('%Y-%m-%d'),
     }
     return render(request, 'cinema/movie_list.html', context)
+
+
+# ... остальные функции представления остаются без изменений ...
 
 def movie_detail(request, movie_id):
     movie = get_object_or_404(Movie, id=movie_id)
