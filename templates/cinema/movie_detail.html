@@ -2,6 +2,8 @@
 <html>
 <head>
     <title>{{ movie.title }}</title>
+    {% load static %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
     <a href="{% url 'movie_list' %}">← Назад к списку фильмов</a>
