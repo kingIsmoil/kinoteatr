@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import (
     Genre, Movie, Actor, Director, MovieActor, MovieDirector,
-    Trailer, Review, Hall, SeatPlace, Show, Order
+    Trailer, Review, Hall, SeatPlace, Show, Order,UserCard
 )
 
 @admin.register(Genre)
@@ -11,6 +11,10 @@ class GenreAdmin(admin.ModelAdmin):
 @admin.register(Movie)
 class MovieAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'country', 'release_date', 'is_active')
+
+@admin.register(UserCard)
+class MovieAdmin(admin.ModelAdmin):
+    list_display = ('card_number',)
 
 @admin.register(Actor)
 class ActorAdmin(admin.ModelAdmin):

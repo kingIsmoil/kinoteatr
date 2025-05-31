@@ -2,6 +2,8 @@
 <html>
 <head>
     <title>{{ movie.title }}</title>
+    {% load static %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
     <a href="{% url 'movie_list' %}">← Назад к списку фильмов</a>
@@ -19,15 +21,16 @@
     </p>
 
     <h2>Трейлеры</h2>
+    <div class="trailer-container">
     {% for trailer in trailers %}
         <div>
-            <video width="400" controls>
-                <source src="{{ trailer.file.url }}" type="video/mp4">
-                Ваш браузер не поддерживает видео.
-            </video>
+            <a href="{{ trailer.file.url }}" target="_blank">
+                <img src="{{ trailer.image.url }}" width="300" alt="Трейлер">
+                <p>Смотреть трейлер (MP4)</p>
+            </a>
         </div>
     {% endfor %}
-
+    </div>
     <h2>Сеансы</h2>
     <ul>
         {% for show in shows %}
