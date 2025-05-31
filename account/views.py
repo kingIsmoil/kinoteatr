@@ -1,6 +1,8 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render, redirect
+from django.contrib.auth import login, authenticate, logout
+from django.contrib import messages
 from .forms import RegisterForm
-from django.contrib.auth import login, authenticate,logout
+
 def register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
@@ -13,7 +15,19 @@ def register(request):
             return redirect('movie_list')
     else:
         form = RegisterForm()
-    return render(request, 'cinema/register.html', {'form': form})
+    return render(request, 'account/register.html', {'form': form})
+
+def login_view(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        user = authenticate(email=email, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('movie_list')
+        else:
+            messages.error(request, 'Неправильный email или пароль.')
+    return render(request, 'account/login.html')
 
 def logoutview(request):
     logout(request)
