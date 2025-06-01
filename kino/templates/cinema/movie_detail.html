@@ -1,77 +1,441 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-    <title>{{ movie.title }}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ movie.title }} | Golden Cinema</title>
     {% load static %}
-<link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-bg: #121212;
+            --primary: #FFD700;
+            --primary-dark: #FFC000;
+            --secondary: #1E1E1E;
+            --text-light: #F5F5F5;
+            --text-gray: #AAAAAA;
+            --error: #FF6B6B;
+            --success: #6BFF6B;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            min-height: 100vh;
+            padding: 2rem;
+            background-image: radial-gradient(circle at 10% 20%, rgba(255, 200, 0, 0.05) 0%, rgba(255, 200, 0, 0.03) 90%);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .back-link::before {
+            content: '←';
+            margin-right: 0.5rem;
+        }
+        
+        .back-link:hover {
+            color: var(--primary-dark);
+        }
+        
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), transparent);
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            margin: 2rem 0 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(to right, var(--primary), transparent);
+        }
+        
+        .movie-header {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .movie-poster {
+            width: 300px;
+            height: 450px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .movie-info {
+            flex: 1;
+        }
+        
+        .movie-info p {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+        
+        .movie-info strong {
+            color: var(--primary);
+        }
+        
+        .trailers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .trailer-card {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+        }
+        
+        .trailer-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.1);
+        }
+        
+        .trailer-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        
+        .trailer-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .trailer-card:hover .trailer-overlay {
+            opacity: 1;
+        }
+        
+        .play-icon {
+            color: var(--primary);
+            font-size: 3rem;
+        }
+        
+        .trailer-caption {
+            padding: 1rem;
+            background: var(--secondary);
+            text-align: center;
+        }
+        
+        .shows-list {
+            list-style: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .shows-list li {
+            margin: 0;
+        }
+        
+        .shows-list a {
+            display: block;
+            padding: 1rem;
+            background: rgba(255, 215, 0, 0.1);
+            color: var(--primary);
+            text-decoration: none;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .shows-list a:hover {
+            background: rgba(255, 215, 0, 0.2);
+            transform: translateY(-3px);
+        }
+        
+        .review-form {
+            background: var(--secondary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-gray);
+        }
+        
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 6px;
+            color: var(--text-light);
+            font-family: 'Montserrat', sans-serif;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.2);
+        }
+        
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        button[type="submit"] {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--dark-bg);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        button[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+        }
+        
+        .reviews-list {
+            margin: 2rem 0;
+        }
+        
+        .review-card {
+            background: var(--secondary);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary);
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .review-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .review-rating {
+            color: var(--primary);
+            font-size: 1.2rem;
+            margin-right: 1rem;
+        }
+        
+        .review-date {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+        
+        .review-text {
+            line-height: 1.6;
+        }
+        
+        .login-prompt {
+            color: var(--text-gray);
+            margin: 1rem 0;
+        }
+        
+        .login-prompt a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .login-prompt a:hover {
+            text-decoration: underline;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .movie-header {
+                flex-direction: column;
+            }
+            
+            .movie-poster {
+                width: 100%;
+                height: auto;
+                max-height: 500px;
+            }
+            
+            .trailers-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .shows-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-    <a href="{% url 'movie_list' %}">← Назад к списку фильмов</a>
-    <h1>{{ movie.title }}</h1>
-    <img src="{{ movie.image.url }}" width="300" alt="{{ movie.title }}">
-    
-    <p><strong>Описание:</strong> {{ movie.description }}</p>
-    <p><strong>Длительность:</strong> {{ movie.duration }} мин.</p>
-    <p><strong>Страна:</strong> {{ movie.country }}</p>
-    <p><strong>Дата выхода:</strong> {{ movie.release_date|date:"d.m.Y" }}</p>
-    <p><strong>Жанры:</strong> 
-        {% for genre in movie.genres.all %}
-            {{ genre.name }}{% if not forloop.last %}, {% endif %}
-        {% endfor %}
-    </p>
-
-    <h2>Трейлеры</h2>
-    <div class="trailer-container">
-    {% for trailer in trailers %}
-        <div>
-            <a href="{{ trailer.file.url }}" target="_blank">
-                <img src="{{ trailer.image.url }}" width="300" alt="Трейлер">
-                <p>Смотреть трейлер (MP4)</p>
-            </a>
+    <div class="container">
+        <a href="{% url 'movie_list' %}" class="back-link">Назад к списку фильмов</a>
+        
+        <div class="movie-header">
+            <img src="{{ movie.image.url }}" class="movie-poster" alt="{{ movie.title }}">
+            <div class="movie-info">
+                <h1>{{ movie.title }}</h1>
+                
+                <p><strong>Описание:</strong> {{ movie.description }}</p>
+                <p><strong>Длительность:</strong> {{ movie.duration }} мин.</p>
+                <p><strong>Страна:</strong> {{ movie.country }}</p>
+                <p><strong>Дата выхода:</strong> {{ movie.release_date|date:"d.m.Y" }}</p>
+                <p><strong>Жанры:</strong> 
+                    {% for genre in movie.genres.all %}
+                        <span style="color: var(--primary);">{{ genre.name }}</span>{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </p>
+            </div>
         </div>
-    {% endfor %}
+
+        <h2>Трейлеры</h2>
+        <div class="trailers-grid">
+            {% for trailer in trailers %}
+                <div class="trailer-card">
+                    <a href="{{ trailer.file.url }}" target="_blank">
+                        <img src="{{ trailer.image.url }}" class="trailer-image" alt="Трейлер">
+                        <div class="trailer-overlay">
+                            <span class="play-icon">▶</span>
+                        </div>
+                        <div class="trailer-caption">
+                            <p>Трейлер {{ forloop.counter }}</p>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+
+        <h2>Сеансы</h2>
+        {% if shows %}
+            <ul class="shows-list">
+                {% for show in shows %}
+                    <li>
+                        <a href="{% url 'show_seats' show.id %}">
+                            {{ show.showing_datetime|date:"d.m.Y H:i" }} (Зал: {{ show.hall_id.name }})
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p style="color: var(--text-gray);">Нет доступных сеансов</p>
+        {% endif %}
+
+        <h2>Отзывы</h2>
+        {% if user.is_authenticated %}
+            <div class="review-form">
+                <h3>Оставить отзыв</h3>
+                <form method="post" action="{% url 'add_review' movie.id %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>Оценка (1-5):</label>
+                        <input type="number" name="star_number" min="1" max="5" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Ваш отзыв:</label>
+                        <textarea name="description" rows="4" required></textarea>
+                    </div>
+                    <button type="submit">Отправить</button>
+                </form>
+            </div>
+        {% else %}
+            <p class="login-prompt"><a href="{% url 'login' %}">Войдите</a>, чтобы оставить отзыв</p>
+        {% endif %}
+        
+        <div class="reviews-list">
+            {% for review in reviews %}
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="review-rating">{{ review.star_number }}⭐</div>
+                        <div class="review-date">{{ review.created_at|date:"d.m.Y H:i" }}</div>
+                    </div>
+                    <div class="review-text">{{ review.description }}</div>
+                </div>
+            {% empty %}
+                <p style="color: var(--text-gray);">Пока нет отзывов</p>
+            {% endfor %}
+        </div>
     </div>
-    <h2>Сеансы</h2>
-    <ul>
-        {% for show in shows %}
-            <li>
-                <a href="{% url 'show_seats' show.id %}">
-                    {{ show.showing_datetime|date:"d.m.Y H:i" }} (Зал: {{ show.hall_id.name }})
-                </a>
-            </li>
-        {% empty %}
-            <li>Нет доступных сеансов</li>
-        {% endfor %}
-    </ul>
-
-    <h2>Отзывы</h2>
-    {% if user.is_authenticated %}
-        <div>
-            <h3>Оставить отзыв</h3>
-            <form method="post" action="{% url 'add_review' movie.id %}">
-                {% csrf_token %}
-                <div>
-                    <label>Оценка (1-5):</label>
-                    <input type="number" name="star_number" min="1" max="5" required>
-                </div>
-                <div>
-                    <label>Ваш отзыв:</label>
-                    <textarea name="description" rows="4" required></textarea>
-                </div>
-                <button type="submit">Отправить</button>
-            </form>
-        </div>
-    {% else %}
-        <p><a href="{% url 'login' %}">Войдите</a>, чтобы оставить отзыв</p>
-    {% endif %}
-    {% for review in reviews %}
-        <div style="border: 1px solid #ccc; padding: 10px; margin: 5px;">
-            <p><strong>Оценка:</strong> {{ review.star_number }}⭐</p>
-            <p>{{ review.description }}</p>
-            <small>{{ review.created_at|date:"d.m.Y H:i" }}</small>
-        </div>
-    {% empty %}
-        <p>Пока нет отзывов</p>
-    {% endfor %}
 </body>
 </html>

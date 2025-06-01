@@ -1,39 +1,262 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-    <title>Оплата бронирования</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оплата бронирования | Golden Cinema</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-bg: #121212;
+            --primary: #FFD700;
+            --primary-dark: #FFC000;
+            --secondary: #1E1E1E;
+            --text-light: #F5F5F5;
+            --text-gray: #AAAAAA;
+            --error: #FF6B6B;
+            --success: #6BFF6B;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            min-height: 100vh;
+            padding: 2rem;
+            background-image: radial-gradient(circle at 10% 20%, rgba(255, 200, 0, 0.05) 0%, rgba(255, 200, 0, 0.03) 90%);
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        h1 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary);
+            font-size: 2.2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), transparent);
+        }
+        
+        .booking-info {
+            background: var(--secondary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .booking-info p {
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+        
+        .booking-info strong {
+            color: var(--primary);
+        }
+        
+        .payment-form {
+            background: var(--secondary);
+            padding: 2rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-gray);
+        }
+        
+        .payment-methods {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .payment-method {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .payment-method:hover {
+            background: rgba(255, 215, 0, 0.1);
+        }
+        
+        .payment-method input {
+            margin-right: 1rem;
+        }
+        
+        .card-select {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 6px;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            display: none;
+        }
+        
+        .card-select.active {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .add-card-link {
+            display: inline-block;
+            margin-top: 1rem;
+            color: var(--primary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .add-card-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+        
+        .add-card-link:hover::after {
+            width: 100%;
+        }
+        
+        button[type="submit"] {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--dark-bg);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            width: 100%;
+            margin-top: 1rem;
+        }
+        
+        button[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 600px) {
+            body {
+                padding: 1rem;
+            }
+            
+            .payment-form {
+                padding: 1.5rem;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Оплата бронирования</h1>
-    <p>Фильм: {{ show.movie_id.title }}</p>
-    <p>Время: {{ show.showing_datetime|date:"d.m.Y H:i" }}</p>
-    <p>Место: {{ seat.id }}</p>
-    <p>Цена: {{ seat.price }} сом</p>
-    
-    <form method="post">
-        {% csrf_token %}
-        <h3>Выберите способ оплаты:</h3>
-        {{ form.payment_method }}
+    <div class="container">
+        <h1>Оплата бронирования</h1>
         
-        {% if form.card %}
-            <div id="card-select" style="margin-top: 20px;">
-                <h3>Выберите карту:</h3>
-                {{ form.card }}
-                <p><a href="{% url 'add_card' %}">Добавить новую карту</a></p>
+        <div class="booking-info">
+            <p><strong>Фильм:</strong> {{ show.movie_id.title }}</p>
+            <p><strong>Время:</strong> {{ show.showing_datetime|date:"d.m.Y H:i" }}</p>
+            <p><strong>Место:</strong> {{ seat.id }}</p>
+            <p><strong>Цена:</strong> {{ seat.price }} сом</p>
+        </div>
+        
+        <form method="post" class="payment-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Выберите способ оплаты:</label>
+                <div class="payment-methods">
+                    {% for radio in form.payment_method %}
+                        <label class="payment-method">
+                            {{ radio.tag }}
+                            {{ radio.choice_label }}
+                        </label>
+                    {% endfor %}
+                </div>
             </div>
-        {% endif %}
-        
-        <button type="submit" style="margin-top: 20px;">Оплатить</button>
-    </form>
-    
+            
+            {% if form.card %}
+                <div id="card-select" class="card-select">
+                    <div class="form-group">
+                        <label>Выберите карту:</label>
+                        {{ form.card }}
+                    </div>
+                    <a href="{% url 'add_card' %}" class="add-card-link">Добавить новую карту</a>
+                </div>
+            {% endif %}
+            
+            <button type="submit">Оплатить</button>
+        </form>
+    </div>
+
     <script>
         document.querySelectorAll('input[name="payment_method"]').forEach(radio => {
             radio.addEventListener('change', function() {
                 const cardSelect = document.getElementById('card-select');
                 if (cardSelect) {
-                    cardSelect.style.display = this.value === 'card' ? 'block' : 'none';
+                    if (this.value === 'card') {
+                        cardSelect.classList.add('active');
+                    } else {
+                        cardSelect.classList.remove('active');
+                    }
                 }
             });
+            
+            // Инициализация при загрузке
+            if (radio.checked && radio.value === 'card' && document.getElementById('card-select')) {
+                document.getElementById('card-select').classList.add('active');
+            }
         });
     </script>
 </body>
