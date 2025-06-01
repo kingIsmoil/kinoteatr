@@ -2,13 +2,13 @@
 <html>
 
 <head>
-    <title>Вход</title>
+    <title>Подтверждение Email</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 
 <body>
-    <h1>Вход</h1>
+    <h1>Подтверждение Email</h1>
     <form method="post">
         {% csrf_token %}
         {% if form.non_field_errors %}
@@ -27,21 +27,21 @@
         </div>
         {% endfor %}
         {% endif %}
+        <p>Мы отправили код подтверждения на ваш email. Пожалуйста, введите его ниже:</p>
         {{ form.as_p }}
-        <button type="submit">Войти</button>
+        <button type="submit">Подтвердить</button>
     </form>
-    <p>Нет аккаунта? <a href="{% url 'register' %}">Зарегистрироваться</a></p>
-    <p>Забыли пароль? <a href="{% url 'forgot_password' %}">Восстановить</a></p>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var closeButtons = document.querySelectorAll('.close-btn');
+
             closeButtons.forEach(function (button) {
                 button.addEventListener('click', function () {
                     this.parentElement.style.opacity = '0';
                     setTimeout(() => {
                         this.parentElement.style.display = 'none';
-                    }, 300);
+                    }, 300); 
                 });
             });
         });

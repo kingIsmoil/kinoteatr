@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Мои карты</title>
+</head>
+<body>
+    <h1>Мои карты</h1>
+    <a href="{% url 'add_card' %}">Добавить новую карту</a>
+    
+    {% if cards %}
+        <ul>
+            {% for card in cards %}
+            <li>
+                {{ card }} ({{ card.expiry_date }})
+                {% if card.is_default %} (по умолчанию) {% endif %}
+                <form method="post"  style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit">Сделать основной</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>У вас нет сохраненных карт</p>
+    {% endif %}
+    
+    <a href="{% url 'movie_list' %}">← На главную</a>
+</body>
+</html>
