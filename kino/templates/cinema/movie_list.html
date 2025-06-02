@@ -1,292 +1,628 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Фильмы | Golden Cinema</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
     <style>
         :root {
-            --dark-bg: #121212;
+            --dark-bg: #0a0a0a;
             --primary: #FFD700;
             --primary-dark: #FFC000;
-            --secondary: #1E1E1E;
-            --text-light: #F5F5F5;
-            --text-gray: #AAAAAA;
+            --primary-light: #FFED4A;
+            --secondary: #1a1a1a;
+            --tertiary: #2a2a2a;
+            --text-light: #F8F9FA;
+            --text-gray: #B8BCC8;
             --error: #FF6B6B;
             --success: #6BFF6B;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 215, 0, 0.15);
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Montserrat', sans-serif;
-            background-color: var(--dark-bg);
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0f0f 50%, #0a0a0a 100%);
             color: var(--text-light);
             min-height: 100vh;
-            padding: 2rem;
-            background-image: radial-gradient(circle at 10% 20%, rgba(255, 200, 0, 0.05) 0%, rgba(255, 200, 0, 0.03) 90%);
+            position: relative;
+            overflow-x: hidden;
         }
-        
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(255, 215, 0, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 215, 0, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 40% 60%, rgba(255, 193, 7, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
         }
-        
+
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
-            animation: fadeIn 0.8s ease-out;
+            margin: 3rem 0;
+            padding: 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow:
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            animation: slideInDown 1s ease-out;
         }
-        
-        h1, h2, h3, h4 {
+
+        h1,
+        h2,
+        h3,
+        h4 {
             font-family: 'Playfair Display', serif;
-            color: var(--primary);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        
+
         h1 {
-            font-size: 2.5rem;
+            font-size: 3rem;
+            font-weight: 700;
             margin: 0;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+            position: relative;
         }
-        
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), transparent);
+            animation: shimmer 2s infinite;
+        }
+
         .user-actions {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 2rem;
         }
-        
-        .user-actions a, .user-actions span {
+
+        .user-actions a,
+        .user-actions span {
+            color: var(--text-light);
+            text-decoration: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            font-weight: 500;
+            overflow: hidden;
+        }
+
+        .user-actions a {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+        }
+
+        .user-actions a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.3), transparent);
+            transition: left 0.6s;
+        }
+
+        .user-actions a:hover::before {
+            left: 100%;
+        }
+
+        .user-actions a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.2);
+            border-color: var(--primary);
+        }
+
+        .user-actions span {
             color: var(--primary);
+            font-weight: 600;
+        }
+
+        .date-filter {
+            margin: 2rem 0 3rem;
+            padding: 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            animation: slideInUp 1s ease-out 0.2s both;
+        }
+
+        .date-filter label {
+            display: block;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .date-filter input[type="date"] {
+            width: 100%;
+            max-width: 300px;
+            padding: 1rem 1.5rem;
+            border-radius: 15px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            color: var(--text-light);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .date-filter input[type="date"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow:
+                0 0 0 3px rgba(255, 215, 0, 0.2),
+                inset 0 1px 3px rgba(0, 0, 0, 0.2);
+            transform: translateY(-1px);
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            margin: 3rem 0 2rem;
+            position: relative;
+            padding-bottom: 1rem;
+            text-align: center;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            border-radius: 2px;
+            animation: pulse 2s infinite;
+        }
+
+        .movies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin: 3rem 0;
+        }
+
+        .movie-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid var(--glass-border);
+            animation: fadeInUp 0.8s ease-out;
+            position: relative;
+        }
+
+        .movie-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.05) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .movie-card:hover::before {
+            opacity: 1;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow:
+                0 25px 50px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 215, 0, 0.3);
+        }
+
+        .movie-poster {
+            width: 100%;
+            height: 450px;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .movie-card:hover .movie-poster {
+            transform: scale(1.05);
+        }
+
+        .movie-content {
+            padding: 2rem;
+            position: relative;
+        }
+
+        .movie-content h3 {
+            margin: 0 0 1rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .movie-content h3 a {
             text-decoration: none;
             transition: all 0.3s ease;
             position: relative;
         }
-        
-        .user-actions a::after {
+
+        .movie-content h3 a::after {
             content: '';
             position: absolute;
             bottom: -2px;
             left: 0;
             width: 0;
-            height: 1px;
-            background: var(--primary);
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
             transition: width 0.3s ease;
         }
-        
-        .user-actions a:hover::after {
+
+        .movie-content h3 a:hover::after {
             width: 100%;
         }
-        
-        .user-actions span {
-            color: var(--text-gray);
-        }
-        
-        .date-filter {
-            margin: 2rem 0;
-            padding: 1.5rem;
-            background: rgba(30, 30, 30, 0.7);
-            border-radius: 8px;
-            border: 1px solid rgba(255, 215, 0, 0.2);
-            animation: fadeIn 0.8s ease-out 0.2s both;
-        }
-        
-        .date-filter label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--text-gray);
-        }
-        
-        .date-filter input[type="date"] {
-            padding: 0.8rem 1rem;
-            border-radius: 6px;
-            border: 1px solid rgba(255, 215, 0, 0.3);
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-light);
-            font-family: 'Montserrat', sans-serif;
-            transition: all 0.3s ease;
-        }
-        
-        .date-filter input[type="date"]:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.2);
-        }
-        
-        h2 {
-            font-size: 1.8rem;
-            margin: 2rem 0 1.5rem;
-            position: relative;
-            padding-bottom: 0.5rem;
-        }
-        
-        h2::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 60px;
-            height: 2px;
-            background: linear-gradient(to right, var(--primary), transparent);
-        }
-        
-        .movies-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-        
-        .movie-card {
-            background: var(--secondary);
-            border-radius: 10px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 215, 0, 0.1);
-            animation: fadeInUp 0.5s ease-out;
-        }
-        
-        .movie-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.1);
-            border-color: rgba(255, 215, 0, 0.3);
-        }
-        
-        .movie-poster {
-            width: 100%;
-            height: 400px;
-            object-fit: cover;
-            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
-        }
-        
-        .movie-content {
-            padding: 1.5rem;
-        }
-        
-        .movie-content h3 {
-            margin: 0 0 1rem;
-            font-size: 1.3rem;
-        }
-        
-        .movie-content h3 a {
-            color: var(--primary);
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-        
-        .movie-content h3 a:hover {
-            color: var(--primary-dark);
-        }
-        
+
         .movie-content p {
             color: var(--text-gray);
-            line-height: 1.6;
+            line-height: 1.7;
             margin-bottom: 1.5rem;
+            font-size: 1rem;
         }
-        
+
+        .movie-content h4 {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
         .session-list {
             list-style: none;
             padding: 0;
             margin: 0;
             display: flex;
             flex-wrap: wrap;
-            gap: 0.5rem;
+            gap: 0.8rem;
         }
-        
+
         .session-list li {
             margin: 0;
         }
-        
+
         .session-list a {
             display: inline-block;
-            padding: 0.5rem 1rem;
-            background: rgba(255, 215, 0, 0.1);
+            padding: 0.8rem 1.2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
             color: var(--primary);
             text-decoration: none;
-            border-radius: 4px;
-            border: 1px solid rgba(255, 215, 0, 0.2);
-            transition: all 0.3s ease;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             font-size: 0.9rem;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
         }
-        
+
+        .session-list a::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 50%;
+            transition: all 0.4s ease;
+            transform: translate(-50%, -50%);
+        }
+
+        .session-list a:hover::before {
+            width: 200px;
+            height: 200px;
+        }
+
         .session-list a:hover {
-            background: rgba(255, 215, 0, 0.2);
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.3);
+            border-color: var(--primary);
         }
-        
+
         .no-shows {
-            padding: 1.5rem;
-            background: rgba(255, 107, 107, 0.1);
+            padding: 3rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
             color: var(--error);
-            border-radius: 8px;
-            border-left: 4px solid var(--error);
-            animation: fadeIn 0.5s ease-out;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 107, 107, 0.2);
+            text-align: center;
+            font-size: 1.2rem;
+            animation: fadeIn 0.8s ease-out;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
         }
-        
+
+        .footer {
+            margin-top: 5rem;
+            padding: 3rem 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--glass-border);
+            border-radius: 25px 25px 0 0;
+            position: relative;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: var(--text-gray);
+            line-height: 1.6;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--primary);
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 215, 0, 0.1);
+            color: var(--text-gray);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: var(--glass-bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            transition: all 0.3s ease;
+            border: 1px solid var(--glass-border);
+        }
+
+        .social-links a:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translate3d(0, -100%, 0);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translate3d(0, 100%, 0);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
             }
+
             to {
                 opacity: 1;
             }
         }
-        
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-        
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(300%);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: translateX(-50%) scaleX(1);
+            }
+
+            50% {
+                opacity: 0.7;
+                transform: translateX(-50%) scaleX(1.1);
+            }
+        }
+
         /* Адаптивность */
         @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+
             .header {
                 flex-direction: column;
-                align-items: flex-start;
+                align-items: stretch;
+                gap: 2rem;
+                margin: 2rem 0;
+                padding: 1.5rem;
+            }
+
+            .user-actions {
+                justify-content: center;
+                flex-wrap: wrap;
                 gap: 1rem;
             }
-            
-            .user-actions {
-                width: 100%;
-                justify-content: space-between;
-            }
-            
+
             h1 {
+                font-size: 2.2rem;
+                text-align: center;
+            }
+
+            h2 {
                 font-size: 2rem;
             }
-            
+
             .movies-grid {
                 grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .movie-card {
+                margin: 0 auto;
+                max-width: 400px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .user-actions a {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .date-filter {
+                padding: 1.5rem;
+            }
+
+            .movie-content {
+                padding: 1.5rem;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
             <h1>Фильмы и расписание</h1>
             <div class="user-actions">
                 {% if user.is_authenticated %}
-                    <a href="{% url 'my_orders' %}">Мои бронирования</a>
-                    <span>Привет, {{ user.email }}!</span>
-                    <a href="{% url 'logout' %}">Выйти</a>
+                <a href="{% url 'my_orders' %}">Мои бронирования</a>
+                <span>Привет, {{ user.email }}!</span>
+                <a href="{% url 'logout' %}">Выйти</a>
                 {% else %}
-                    <a href="{% url 'login' %}">Войти</a>
-                    <a href="{% url 'register' %}">Регистрация</a>
+                <a href="{% url 'login' %}">Войти</a>
+                <a href="{% url 'register' %}">Регистрация</a>
                 {% endif %}
             </div>
         </div>
@@ -302,35 +638,81 @@
         <h2>Сеансы на {{ selected_date|date:"d.m.Y" }}</h2>
 
         {% if not movies_with_shows %}
-            <div class="no-shows">
-                В выбранный день нет сеансов. Пожалуйста, выберите другую дату.
-            </div>
+        <div class="no-shows">
+            В выбранный день нет сеансов. Пожалуйста, выберите другую дату.
+        </div>
         {% else %}
-            <div class="movies-grid">
-                {% for movie_item in movies_with_shows %}
-                    <div class="movie-card">
-                        <img src="{{ movie_item.movie.image.url }}" class="movie-poster" alt="{{ movie_item.movie.title }}">
-                        <div class="movie-content">
-                            <h3><a href="{% url 'movie_detail' movie_item.movie.id %}">{{ movie_item.movie.title }}</a></h3>
-                            <p>{{ movie_item.movie.description|truncatewords:30 }}</p>
+        <div class="movies-grid">
+            {% for movie_item in movies_with_shows %}
+            <div class="movie-card">
+                <img src="{{ movie_item.movie.image.url }}" class="movie-poster" alt="{{ movie_item.movie.title }}">
+                <div class="movie-content">
+                    <h3><a href="{% url 'movie_detail' movie_item.movie.id %}">{{ movie_item.movie.title }}</a></h3>
+                    <p>{{ movie_item.movie.description|truncatewords:30 }}</p>
 
-                            {% if movie_item.shows %}
-                                <h4>Сеансы:</h4>
-                                <ul class="session-list">
-                                    {% for show in movie_item.shows %}
-                                        <li>
-                                            <a href="{% url 'show_seats' show.id %}">
-                                                {{ show.showing_datetime|date:"H:i" }} - Зал {{ show.hall_id.name }}
-                                            </a>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            {% endif %}
-                        </div>
-                    </div>
-                {% endfor %}
+                    {% if movie_item.shows %}
+                    <h4>Сеансы:</h4>
+                    <ul class="session-list">
+                        {% for show in movie_item.shows %}
+                        <li>
+                            <a href="{% url 'show_seats' show.id %}">
+                                {{ show.showing_datetime|date:"H:i" }} - Зал {{ show.hall_id.name }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
             </div>
+            {% endfor %}
+        </div>
         {% endif %}
+
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Golden Cinema</h3>
+                    <p>Премиальный кинотеатр с лучшими фильмами и непревзойденным качеством обслуживания. Погрузитесь в
+                        мир кино вместе с нами.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Контакты</h3>
+                    <ul>
+                        <li><a href="tel:+992000000000">+992 (00) 000-00-00</a></li>
+                        <li><a href="mailto:info@goldencinema.tj">info@goldencinema.tj</a></li>
+                        <li>г. Душанбе, ул. Рудаки, 123</li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Услуги</h3>
+                    <ul>
+                        <li><a href="#">Онлайн бронирование</a></li>
+                        <li><a href="#">VIP залы</a></li>
+                        <li><a href="#">Корпоративные мероприятия</a></li>
+                        <li><a href="#">Детские сеансы</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Информация</h3>
+                    <ul>
+                        <li><a href="#">О нас</a></li>
+                        <li><a href="#">Правила посещения</a></li>
+                        <li><a href="#">Акции и скидки</a></li>
+                        <li><a href="#">Конфиденциальность</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Golden Cinema. Все права защищены.</p>
+                <div class="social-links">
+                    <a href="#" title="Instagram">📷</a>
+                    <a href="#" title="Facebook">📘</a>
+                    <a href="#" title="Telegram">📱</a>
+                    <a href="#" title="WhatsApp">📞</a>
+                </div>
+            </div>
+        </footer>
     </div>
 </body>
+
 </html>
